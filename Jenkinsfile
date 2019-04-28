@@ -6,6 +6,7 @@ pipeline {
         stages {
             stage('Build') {
                 steps {
+                    sh 'chmod +x Slack_bot.sh';
                     sh './Slack_bot.sh Build';
                 }
             }
