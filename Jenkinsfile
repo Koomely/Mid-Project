@@ -1,13 +1,14 @@
 #!/usr/bin/env groovy
 
 pipeline {
-    agent agent-node
-    stages {
-        stage('Build') {
-            steps {
-                sh './Slack_bot.sh Build';
-                
+    agent { node { label 'Host_Node' }
+    
+        stages {
+            stage('Build') {
+                steps {
+                    sh './Slack_bot.sh Build';
+                }
             }
         }
     }
-}
+
