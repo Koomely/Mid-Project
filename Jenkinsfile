@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
 pipeline {
-    agent { node { label 'Host_Node' }
+    agent { node { label 'Host_Node' } }
     
         stages {
             stage('Build') {
