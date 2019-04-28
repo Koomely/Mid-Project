@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh -c 'Slack_bot.sh Build';
+                sh Slack_bot.sh Build;
                 
             }
         }
