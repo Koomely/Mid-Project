@@ -1,0 +1,10 @@
+<com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey plugin="ssh-credentials@1.13"> 
+  <scope>GLOBAL</scope> 
+    <id>ubuntu</id> 
+      <description>User for SSH Slave</description> 
+        <username>ubuntu</username> 
+	  <privateKeySource class="com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey$DirectEntryPrivateKeySource"> 
+      <privateKey>
+      </privateKey> 
+		</privateKeySource> 
+ </com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey>

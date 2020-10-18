@@ -1,0 +1,39 @@
+# Create a pod and expose port 5050
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: couchpotato-deploy
+  labels:
+    app: couchpotato
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: couchpotato
+  template:
+    metadata:
+      labels:
+        app: couchpotato
+    spec:
+      containers:
+      - name: couchpotato-pod
+        image: koomely/couchpotato:latest
+        ports:
+        - name: http
+          protocol: TCP
+          containerPort: 5050
+---
+apiVersion: v1
+kind: Service
+metadata:  
+  name: couchpotato-service
+spec:
+  selector:    
+    app: couchpotato
+  type: NodePort
+  ports:  
+  - name: http
+    port: 5050
+    targetPort: 5050
+    nodePort: 30036
+    protocol: TCP

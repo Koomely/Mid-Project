@@ -1,0 +1,49 @@
+---
+- name: Consul | HAProxy Server provisioning
+  hosts: haproxy
+  become: true
+
+  tasks:
+
+    - name: Consul | HAProxy |  Shell command run-consul
+      shell: "/opt/consul/bin/run-consul --client --cluster-tag-key consul-cluster --cluster-tag-value prod-cluster"
+      become: yes
+      become_method: sudo
+
+    - name: Consul Servers | correcting config
+      replace:
+        path: /opt/consul/config/default.json
+        after: 'migration\": false'
+        before: '}'
+        regexp: '^(.+)$'
+        replace: ''
+
+
+    - name: Consul Servers | correcting config
+      replace:
+        path: /opt/consul/config/default.json
+        regexp: '"ui"'
+        replace: '"enable_script_checks": true, "ui"'
+        
+    - name: Consul | HAProxy | Copy common Health Checks files to /opt/consul/config
+      copy:
+        src: consul_provision/hc/{{ item }}
+        dest: /opt/consul/config/
+      with_items:
+        - hc.json
+        - mem_utilization.sh
+        - cpu_utilization.sh
+        - hdd_utilization.sh
+
+    - name: Consul | HAProxy | Copy LB json files to /opt/consul/data
+      copy:
+        src: consul_provision/lb-consul.d/lb.service.json
+        dest: /opt/consul/config/
+
+    - name: Consul | HAProxy | Restart consul
+      systemd:
+        name: consul
+        enabled: yes
+        state: restarted
+      become: true
+      become_method: sudo

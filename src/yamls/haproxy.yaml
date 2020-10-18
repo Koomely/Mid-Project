@@ -1,0 +1,28 @@
+---
+- name: HAProxy provisioning
+  hosts: haproxy
+  become: true
+
+  tasks:
+
+   - name: HAProxy | Install haproxy package
+     apt:
+       name: haproxy
+       state: present
+     become: true
+     become_method: sudo
+
+   - name: HAProxy | Copy haproxy config file
+     copy:
+       src: /home/ubuntu/haproxy.cfg
+       dest: /etc/haproxy/haproxy.cfg
+     become: true
+     become_method: sudo
+
+   - name: HAProxy | Enable haproxy at boot
+     systemd:
+       name: haproxy
+       enabled: yes
+       state: restarted
+     become: true
+     become_method: sudo

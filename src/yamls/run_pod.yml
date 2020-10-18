@@ -1,0 +1,11 @@
+---
+- name: Apply pod YAML on master
+  hosts: k8s_master
+  tasks:
+    - name: sleep for 240 seconds and continue with play
+      wait_for: timeout=240
+      delegate_to: localhost
+
+    - name: K8S | Start pod with kubectl apply
+      shell: kubectl apply -f /home/ubuntu/pod.yml
+

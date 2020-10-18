@@ -1,0 +1,39 @@
+---
+- name: Configure credentials xml for Jenkins
+  hosts: localhost
+  become: true
+
+  tasks:
+
+    - name: Copy content SSH key
+      shell:  cat /home/ubuntu/.ssh/id_rsa
+      register: copy_key
+      tags: key_var
+
+    - name: Set temp config
+      shell: "echo $TEMP_CONFIG"
+      environment:
+        TEMP_CONFIG: "{{copy_key.stdout}}"
+      tags: key_var
+      register: shell_echo
+
+    - debug:
+        var: shell_echo.stdout
+    
+    - name: copy RSA key to Jenkins Cred file
+      blockinfile:
+       path: /home/ubuntu/src/Jenkins_init/cred_key.xml
+       insertafter: "<privateKey>"
+       marker: ""
+       content: |
+           {{ shell_echo.stdout }}
+    - name: Cut RSA Key empty lines
+      lineinfile:
+       path: /home/ubuntu/src/Jenkins_init/cred_key.xml
+       state: absent
+       regexp: '^$'
+  
+    - name: Reload HAProxy
+      service:
+        name: haproxy
+        state: reloaded

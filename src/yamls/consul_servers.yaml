@@ -1,0 +1,49 @@
+---
+- name: Consul Server provisioning
+  hosts: consul
+  become: true
+
+  tasks:
+
+    - name: Consul Servers | Shell command run-consul
+      shell: "/opt/consul/bin/run-consul --server --cluster-tag-key consul-cluster --cluster-tag-value prod-cluster"
+      become: yes
+      become_method: sudo
+
+    - name: Consul | Copy common Health Checks files to /opt/consul/config
+      copy:
+        src: consul_provision/hc/{{ item }}
+        dest: /opt/consul/config/
+      with_items:
+        - hc.json
+        - mem_utilization.sh
+        - cpu_utilization.sh
+        - hdd_utilization.sh
+
+    - name: Consul Servers | Copy Servers json files to /opt/consul/config
+      copy:
+        src: consul_provision/cs-consul.d/server.json
+        dest: /opt/consul/config/
+
+    - name: Consul Servers | correcting config
+      replace:
+        path: /opt/consul/config/default.json
+        after: 'migration\": false'
+        before: '}'
+        regexp: '^(.+)$'
+        replace: ''
+
+
+    - name: Consul Servers | correcting config
+      replace:
+        path: /opt/consul/config/default.json
+        regexp: '"ui"'
+        replace: '"enable_script_checks": true, "ui"'
+        
+    - name: Consul Server | Restart consul
+      systemd:
+        name: consul
+        enabled: yes
+        state: restarted
+      become: true
+      become_method: sudo

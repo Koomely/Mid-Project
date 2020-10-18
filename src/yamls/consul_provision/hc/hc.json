@@ -1,0 +1,22 @@
+{
+  "checks": [
+    {
+      "id": "check_cpu_utilization",
+      "name": "CPU Utilization",
+      "script": "cpu_utilization.sh",
+      "interval": "10s"
+    },
+    {
+      "id": "check_mem_utilization",
+      "name": "MEM Utilization",
+      "script": "mem_utilization.sh",
+      "interval": "10s"
+    },
+    {
+      "id": "check_hdd_utilization",
+      "name": "HDD Utilization",
+      "script": "hdd_utilization.sh",
+      "interval": "10s"
+    }
+  ]
+}
